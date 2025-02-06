@@ -1,0 +1,139 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Check Spelling</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <style>
+        body {
+            padding: 20px;
+            background: MidnightBlue;
+            color: white;
+        }
+        .container {
+            margin-top: 10px;
+            max-width: 1200px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .text-editor, .highlighted-text {
+            width: 100%;
+            height: 200px;
+            resize: none;
+        }
+        .btn-primary {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .btn-small {
+            width: 48%;
+            height: 50px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .suggestion-list {
+            margin-top: 20px;
+        }
+        .suggestion-item {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .suggestion-item select {
+            width: 75%;
+        }
+        .suggestion-item input {
+            width: 20%;
+        }
+        .sidebar {
+            border-left: 1px solid #dee2e6;
+            padding-left: 20px;
+        }
+        .content {
+            padding-right: 20px;
+        }
+        .highlighted-text {
+            border: 1px solid #ced4da;
+            padding: 10px;
+            height: auto;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="text-center">Check Spelling</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 content">
+                <form action="/spell" method="post">
+                    <button type="submit" class="btn btn-primary">Check Spelling</button>
+                    <div class="form-group">
+                        <label for="text">Text Editor (500 characters)</label>
+                        <textarea class="form-control text-editor" id="text" name="text" maxlength="500">{{ original_text or '' }}</textarea>
+                    </div>
+                </form>
+                {% if highlighted_text %}
+                    <div class="form-group mt-3">
+                        <label for="highlighted-text">Mistakes: </label>
+                        <div class="highlighted-text" id="highlighted-text">
+                            {{ highlighted_text|safe }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6 sidebar">
+                <div class="suggestion-list">
+                    <h5>Dictionary:</h5>
+                    <form action="/apply_corrections" method="post">
+                        {% if corrections %}
+                            {% for original, suggestions in corrections.items() %}
+                                <div class="form-group suggestion-item">
+                                    <select name="correction_{{ original }}" class="form-select">
+                                        <option value="">-- Keep original --</option>
+                                        {#{% for suggestion in suggestions %}#}
+                                        {% for suggestion in suggestions[:4] %}
+                                            <option value="{{ suggestion }}">{{ suggestion }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="text" value="{{ original }}" id="dictionary-search">
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="form-group suggestion-item">
+                                <select name="correction_placeholder" class="form-select">
+                                    <option value="">-- No suggestions available --</option>
+                                </select>
+                                <input type="text" id="dictionary-search">
+                            </div>
+                        {% endif %}
+                        <div class="btn-container">
+                            <button type="submit" class="btn btn-small btn-primary">Apply Corrections</button>
+                            <button type="button" class="btn btn-small btn-secondary" id="search-button">Perform a manual Search for "Chemistry" terms</button>
+                        </div>
+                        <input type="hidden" name="original_text" value="{{ original_text }}">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById('search-button').addEventListener('click', function() {
+            const searchValue = document.getElementById('dictionary-search').value;
+            if (searchValue) {
+                window.location.href = `/search_dictionary?word=${encodeURIComponent(searchValue)}`;
+            }
+        });
+    </script>
+</body>
+</html>
