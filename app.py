@@ -71,6 +71,7 @@ def submit_review():
 if __name__ == '__main__':
     app.run(debug=True)"""
 
+###Через CMD
 from flask import Flask, request, jsonify
 import sqlite3
 from datetime import datetime
