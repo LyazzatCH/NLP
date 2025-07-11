@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Отзывы</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 300px;
+            height: 80px;
+        }
+        .review {
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Оставьте отзыв</h1>
+    <form action="/submit" method="post">
+        <textarea name="text" required placeholder="Напишите ваш отзыв здесь..."></textarea><br>
+        <button type="submit">Отправить</button>
+    </form>
+
+    <h2>Все отзывы</h2>
+    {% for review in reviews %}
+        <div class="review">
+            <strong>Тональность:</strong> {{ review[2] }}<br>
+            <strong>Текст:</strong> {{ review[1] }}<br>
+            <small><em>{{ review[3] }}</em></small>
+        </div>
+    {% else %}
+        <p>Пока нет отзывов.</p>
+    {% endfor %}
+</body>
+</html>
