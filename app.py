@@ -1,5 +1,5 @@
 """
-###Это приложение которое работает через браузер
+###Это веб-приложение
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 import sqlite3
 from datetime import datetime
