@@ -1,0 +1,7 @@
+тестировать через CMD:
+
+curl -X POST http://127.0.0.1:5000/reviews -H "Content-Type: application/json" -d "{\"text\":\"Я люблю этот продукт!\"}"
+curl http://127.0.0.1:5000/reviews
+curl http://127.0.0.1:5000/reviews?sentiment=positive
+curl http://127.0.0.1:5000/reviews?sentiment=negative
+curl http://127.0.0.1:5000/reviews?sentiment=neutral
